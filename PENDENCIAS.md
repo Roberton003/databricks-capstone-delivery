@@ -168,3 +168,70 @@ databricks-lakebase-app-day-1/
 ## Fora do escopo adicional
 
 - Não adicionar funcionalidades fora dos requisitos do capstone sem necessidade demonstrada
+
+---
+
+## Day 1 Lakebase Homework — Feedback e Pendências
+
+**Data do Feedback:** 2026-08-10  
+**Nota Final:** 87/100  
+**Instructor:** Databricks AI Bootcamp
+
+### Rubric Breakdown
+
+| Category | Score | Max | Feedback |
+|----------|-------|-----|----------|
+| Lakebase schema | 20 | 20 | Well-modeled schema with UUID PKs, foreign keys, ON DELETE CASCADE |
+| Sample data | 10 | 10 | 3 tickets with different statuses, 2+ messages each |
+| Reading from Lakebase | 20 | 20 | App queries Lakebase via psycopg2 |
+| Creating data | 20 | 20 | Routes perform INSERTs with commits |
+| Updating ticket status | 10 | 10 | Implemented with NOW() for updated_at |
+| Deployment | 5 | 10 | No App URL or deployment screenshot |
+| Submission and reflection | 2 | 10 | No App URL, repo URL, or screenshots |
+
+### O Que Está Bom
+
+- Schema relacional forte com UUIDs, foreign keys e indexes
+- CRUD completo implementado contra Lakebase
+- Secret handling seguro com Databricks Secrets
+- Código limpo e bem estruturado
+
+### O Que Precisa Melhorar
+
+#### 1. Scripts de Sample Data Inconsistentes
+
+**Problema:** `sample_data.sql` e scripts Python usam abordagens diferentes:
+
+- `sample_data.sql`: Usa `gen_random_uuid()` para `ticket_id` nas mensagens — isso cria UUIDs aleatórios que **não referenciam** os tickets inseridos
+- `setup_tickets.py` e `setup_tickets_databricks.py`: Usa IDs 1/2/3 para tickets — falha com UUIDs
+
+**Solução:** Usar o padrão de `initialize_db.sql`:
+```sql
+INSERT INTO ticket_messages (ticket_id, message_text, author) VALUES
+    ((SELECT ticket_id FROM tickets WHERE title = '...'), '...', '...');
+```
+
+Ou recuperar os UUIDs programaticamente antes de inserir mensagens.
+
+#### 2. evidência de Deploy ausente
+
+Falta:
+- [ ] Databricks App URL
+- [ ] Screenshot do app rodando
+- [ ] Screenshot das tabelas no Lakebase com dados
+- [ ] Repository URL (GitHub ou Workspace path)
+
+#### 3. Submissão incompleta
+
+Falta no documento de entrega:
+- [ ] Fonte do código (link do repositório)
+
+---
+
+## Pendências do Day 1
+
+- [ ] Corrigir scripts de sample data (usar SELECT subquery para ticket_id)
+- [ ] Fazer deploy da aplicação no Databricks Apps
+- [ ] Capturar screenshots (app rodando + tabelas Lakebase)
+- [ ] Criar repository GitHub público
+- [ ] Adicionar App URL e screenshots ao README.md
