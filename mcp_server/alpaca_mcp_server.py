@@ -141,6 +141,59 @@ def remove_from_watchlist(symbol: str) -> dict:
         }
 
 
+def save_research_note(symbol: str, title: str, content: str | None = None) -> dict:
+    """Save a research note to the database for a ticker. Returns the created note."""
+    try:
+        symbol = symbol.strip().upper()
+        result = lakebase.save_research_note(ticker=symbol, title=title, content=content)
+        if result:
+            return {
+                "status": "ok",
+                "id": result["id"],
+                "ticker": result["ticker"],
+                "title": result["title"],
+                "created_at": str(result.get("created_at", "N/A")),
+            }
+        return {
+            "status": "error",
+            "message": "Failed to save research note",
+        }
+    except Exception as e:
+        logger.exception(f"Failed to save research note for {symbol}")
+        return {
+            "status": "error",
+            "message": f"Failed to save research note: {str(e)}",
+        }
+
+
+def save_analysis_report(symbol: str, report: dict | None = None, sources: list | None = None) -> dict:
+    """Save an analysis report to the database for a ticker. Returns the created report."""
+    try:
+        symbol = symbol.strip().upper()
+        result = lakebase.save_analysis_report(
+            ticker=symbol,
+            report=report or {},
+            sources=sources or []
+        )
+        if result:
+            return {
+                "status": "ok",
+                "id": result["id"],
+                "ticker": result["ticker"],
+                "created_at": str(result.get("created_at", "N/A")),
+            }
+        return {
+            "status": "error",
+            "message": "Failed to save analysis report",
+        }
+    except Exception as e:
+        logger.exception(f"Failed to save analysis report for {symbol}")
+        return {
+            "status": "error",
+            "message": f"Failed to save analysis report: {str(e)}",
+        }
+
+
 def _current_user_email() -> str:
     """Resolve the current user's email from Databricks request headers."""
     header_email = os.environ.get("DATABRICKS_CURRENT_USER_EMAIL")
@@ -168,6 +221,8 @@ def run_mcp_server():
     logger.info("  - get_watchlist")
     logger.info("  - add_to_watchlist")
     logger.info("  - remove_from_watchlist")
+    logger.info("  - save_research_note (NEW)")
+    logger.info("  - save_analysis_report (NEW)")
     logger.info("\nTo start the server, install fastmcp and run:")
     logger.info("  pip install fastmcp")
     logger.info("  python alpaca_mcp_server.py")
