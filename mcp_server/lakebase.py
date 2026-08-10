@@ -111,5 +111,4 @@ def get_analysis_reports(ticker: str, limit: int = 10) -> list[dict]:
         ORDER BY created_at DESC
         LIMIT %s
     """
-    return run_query(sql, (ticker, limit)))
-            return cur.rowcount
+    return run_query(sql, (ticker, limit))
