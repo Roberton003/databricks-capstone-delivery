@@ -1,0 +1,18 @@
+# Databricks Workflow for Agent Bricks MCP server
+# Deploy: databricks bundle deploy -t dev
+# This is the MCP server that Agent Bricks will call
+
+resources:
+  jobs:
+    mcp_server:
+      name: "[${bundle.target}] Alpaca MCP Server"
+      cluster_spec:
+        spark_version: "15.4.x-scala2.12"
+        node_type_id: "i3.xlarge"
+        num_workers: 1
+        data_security_mode: SINGLE_USER
+      spark_python_task:
+        python_file: ../mcp_server/alpaca_mcp_server.py
+        parameters:
+          - "--port"
+          - "8000"

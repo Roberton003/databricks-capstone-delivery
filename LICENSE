@@ -1,0 +1,43 @@
+# Databricks AI Bootcamp Capstone - License
+
+Este projeto foi desenvolvido como parte do treinamento do [Databricks AI Bootcamp](https://www.dataexpert.io) da DataExpert.io.
+
+## Copyright
+
+Copyright (c) 2026 Roberto
+
+Todos os direitos reservados.
+
+## Uso e Distribuição
+
+Este código pode ser:
+
+1. **Usado como portfolio** - demonstrar habilidades técnicas para recrutadores e tech leads
+2. **Consultado para aprendizado** - estudar arquitetura, pattern e implementação
+3. **Refatorado** - aprender com a estrutura e adaptar para novos projetos
+
+**NÃO** deve ser usado para:
+
+- Decisões financeiras reais (não é um sistema de trading em produção)
+- Criação de plugins/comercial sem permissão explícita
+- Reprodução total como seu próprio trabalho
+
+## Licença
+
+Este projeto é fornecido "como está", sem garantia de qualquer tipo, expressa ou implícita, incluindo, mas não limitado às garantias de comercialização, adequação a um propósito específico e não violação. Em nenhum caso os autores serão responsáveis por qualquer reclamação, danos ou outra responsabilidade, seja em uma ação de contrato, delito ou de outra forma, decorrente de, ou em conexão com o software ou o uso ou outros acordos no software.
+
+## Terceiros
+
+Este projeto depende de:
+
+- [Databricks SDK](https://github.com/databricks/databricks-sdk-py) - Apache License 2.0
+- [Flask](https://github.com/pallets/flask) - BSD 3-Clause
+- [psycopg2](https://github.com/psycopg/psycopg2) - LGPL
+- [requests](https://github.com/psf/requests) - Apache License 2.0
+- [sentence-transformers](https://github.com/UKPLab/sentence-transformers) - Apache License 2.0
+
+Consulte os repositórios originais para detalhes das licenças.
+
+---
+
+*Este projeto foi desenvolvido durante o Databricks AI Bootcamp para demonstrar competências em engenharia de dados, RAG e agentes de IA.*
