@@ -2,9 +2,12 @@
 ## Databricks AI Bootcamp Capstone
 
 **Data:** 2026-08-10  
-**Projeto:** Massive + Lakebase Databricks App (Day 1 → Day 2 → Day 3)  
+**Projeto:** Databricks AI Bootcamp Capstone - Stock-Market Research Assistant  
 **Base:** Fork de [`Roberton003/databricks-lakebase-app-day-1`](https://github.com/Roberton003/databricks-lakebase-app-day-1)  
-**Capstone:** [`EcZachly/databricks-ai-bootcamp-capstone`](https://github.com/EcZachly/databricks-ai-bootcamp-capstone)
+**Capstone:** [`EcZachly/databricks-ai-bootcamp-capstone`](https://github.com/EcZachly/databricks-ai-bootcamp-capstone)  
+**Versão:** 4.0.0 (Entrega Profissional)  
+**Status:** Código implementado | Aguardando deploy no Databricks Workspace  
+**Repositório:** https://github.com/Roberton003/databricks-capstone-delivery
 
 ---
 
@@ -487,6 +490,7 @@ mcp = FastMCP("test")
 | 2026-08-09 | v1.1 | Roberto | Entendimento do capstone |
 | 2026-08-10 | v2.0 | Claude | PRD e Plano de Execução completo |
 | 2026-08-10 | v3.0 | Claude | Atualização: proposta = Stock-market research assistant; trading removido como requisito obrigatório; foco em notas/relatórios para ações de escrita do agente |
+| 2026-08-10 | v4.0 | Claude | **Repositório profissional com README, TECHNICAL, CONTRIBUTING, CHANGELOG, LICENSE e pyproject.toml** |
 
 ---
 
