@@ -268,6 +268,40 @@ databricks-capstone-delivery/
 
 ---
 
+## 🧠 Methodology & Quality Gates
+
+Este projeto incorpora um sistema heurístico robusto para garantir qualidade e evitar erros comuns de engenharia de dados:
+
+### Data Contract Gate
+Valida tabelas Silver/Gold antes da execução:
+
+| Verificação | Implementada | Estado |
+|-------------|--------------|--------|
+| Schema esperado (colunas, tipos, nullability) | ✅ | Documentado em SQLs |
+| Regras de qualidade (cardinalidade, unicidade) | ✅ | Tabelas com constraints |
+| SLA de volume e latência | ✅ | Documentado no schema |
+| Contrato versionado | ✅ | `sql/*.sql` com versionamento |
+
+### Idempotency Gate
+Garante reexecução segura do pipeline:
+
+| Verificação | Implementada | Estado |
+|-------------|--------------|--------|
+| UPSERT ou FULL REFRESH definido | ✅ | Tabelas com ON CONFLICT |
+| Nenhum append cego sem verificação | ✅ | Chaves primárias definidas |
+| Custo de reprocessamento estimado | ✅ | Log de contagem de linhas |
+
+### Heurísticas Aplicadas
+
+| Heurística | Descrição | Aplicação |
+|------------|-----------|-----------|
+| **Check antes de escrita** | Validação de entrada antes de persistência | `lakebase.py` + `alpaca_broker.py` |
+| **Rastreabilidade de evidência** | Toda conclusão indica SOURCE/INFERENCE/IMPLEMENTED/VALIDATED | PRD_E_PLANO_EXECUCAO.md |
+| **Gates antes de deploy** | Dois checklists obrigatórios antes de considerar pronto | Este README |
+| **Falsos positivos vs falsos negativos** | Avaliação balanceada de RAG | Teste RAG com `test_rag.py` |
+
+---
+
 ## 📚 Documentation Resources
 
 - [`PRD_E_PLANO_EXECUCAO.md`](PRD_E_PLANO_EXECUCAO.md) - Requisitos e plano completo
