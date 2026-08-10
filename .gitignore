@@ -124,4 +124,12 @@ docs/*-original/
 
 # Registros de sessão
 *.session
+
+# ============================================
+# ENTREGA DO PROFESSOR
+# ============================================
+# Arquivos de entrega em zip (não versionar no git)
+# O professor pede .zip para avaliação local sem dependência de GitHub
+databricks-capstone-delivery.zip
+*.zip
 *.session.*
