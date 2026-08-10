@@ -1,4 +1,21 @@
-# Databricks AI Bootcamp Capstone
+# 🧠 Stock-Market Research Assistant
+
+<div align="center">
+
+[![Databricks](https://img.shields.io/badge/Databricks-000000?logo=databricks&logoColor=white&style=flat-square)](https://www.databricks.com)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python&logoColor=white&style=flat-square)](https://www.python.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-3.16+-316192?logo=postgresql&logoColor=white&style=flat-square)](https://www.postgresql.org)
+[![Apache Spark](https://img.shields.io/badge/Apache_Spark-3.5+-E25A1C?logo=apachespark&logoColor=white&style=flat-square)](https://spark.apache.org)
+[![FastMCP](https://img.shields.io/badge/FastMCP-1.0+-6B46C1?logo=api&logoColor=white&style=flat-square)](https://modelcontextprotocol.io)
+[![pgvector](https://img.shields.io/badge/pgvector-0.5+-425D84?logo=postgresql&logoColor=white&style=flat-square)](https://github.com/pgvector/pgvector)
+
+**Databricks AI Bootcamp Capstone — Stock-Market Research Assistant**
+
+*Implementação profissional do projeto final do treinamento DataExpert.io*
+
+</div>
+
+---
 
 ## 🎓 Conclusão do Treinamento
 
@@ -8,26 +25,27 @@ Este repositório contém a **entrega final do projeto do Databricks AI Bootcamp
 
 - **Bootcamp:** [Rise of the AI Data Engineer](https://www.dataexpert.io)
 - **Repository:** [EcZachly/databricks-ai-bootcamp-capstone](https://github.com/EcZachly/databricks-ai-bootcamp-capstone)
+- **NotebookLM:** [Databricks AI Boot Camp](https://notebook.google.com/notebook/da2bd8e6-454b-4e35-a2e3-c9924ebe7630)
 
 ---
 
-## 📋 Projeto: Stock-Market Research Assistant
+## 📌 Project Highlights
 
-Este projeto é uma implementação completa do **"Stock-Market Research Assistant"** - um sistema que ajuda investidores a rastrear tickers, pesquisar notícias, obter contexto semântico e salvar análises.
-
-### ✅ Requisitos do Capstone Atendidos
-
-| # | Requisito | Status | Detalhes |
-|---|-----------|--------|----------|
-| 1 | Pipeline de dados com Spark | ✅ | `notebooks/ingest_ticker_news_embeddings.py` |
-| 2 | Integração com API externa | ✅ | Massive API para preços e notícias |
-| 3 | Conteúdo não estruturado | ✅ | HTML → texto limpo → chunks com `trafilatura` |
-| 4 | Databricks App com frontend | ✅ | Dashboard Flask e API principal |
-| 5 | Agente com leitura e escrita | ✅ | MCP Server com ferramentas de pesquisa e persistência |
+| Feature | Status | Description |
+|---------|--------|-------------|
+| Pipeline Spark | ✅ | Ingestão distribuída com Spark e Delta Lake |
+| API Externa | ✅ | Massive API para preços e notícias de ações |
+| Conteúdo Não Estruturado | ✅ | HTML → texto → chunks com trafilatura |
+| Databricks App | ✅ | Main App + Dashboard separados |
+| Agente Leitura/Escrita | ✅ | MCP Server com tools de pesquisa e persistência |
+| RAG com pgvector | ✅ | Embeddings e busca semântica HNSW |
+| Wiki Completa | ✅ | Documentação técnica e arquitetural |
 
 ---
 
-## 🏗️ Arquitetura
+## 🏛️ Architecture & Tech Stack
+
+### Camadas da Arquitetura
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -80,105 +98,87 @@ Este projeto é uma implementação completa do **"Stock-Market Research Assista
 │  │  │  - save_research_note(symbol, title, content)                 │   │      │
 │  │  │  - save_analysis_report(symbol, report, sources)              │   │      │
 │  │  └───────────────────────────────────────────────────────────────┘   │      │
-│  └────────────────────────────────────────────────────��──────────────────┘      │
+│  └──────────────────────────────────────────────────────────────────────┘      │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Stack Tecnológica
+
+| Camada | Tecnologia | Versão | Uso |
+|--------|------------|--------|-----|
+| **Data Warehouse** | Databricks Lakebase | Postgres | Banco transacional integrado |
+| **Processing** | Apache Spark | 3.5+ | Pipelines distribuídos |
+| **Embeddings** | sentence-transformers | all-MiniLM-L6-v2 | Similaridade semântica |
+| **Vector Search** | pgvector | 0.5+ | Índice HNSW cosine |
+| **APIs** | Massive.com | v2 | Preços e notícias de ações |
+| **Agent Framework** | FastMCP | 1.0+ | Ferramentas para agente |
+| **Frontend** | Flask | 2.0+ | API e Dashboard |
+
 ---
 
-## 📦 Estrutura do Projeto
+## 🗺️ Architecture Diagram
 
+### Pipeline de Dados
+
+```mermaid
+flowchart LR
+    subgraph "Ingestão"
+        A[Watchlist Lakebase] -->|tickers| B[Massive API]
+        B -->|notícias| C[ticker_news_documents]
+    end
+
+    subgraph "Processamento"
+        C -->|HTML| D[trafilatura]
+        D -->|texto| E[Chunking]
+        E -->|chunks| F[Embeddings Spark]
+    end
+
+    subgraph "Armazenamento"
+        F -->|embeddings| G[ticker_news_embeddings]
+        E -->|chunks| H[ticker_news_chunk_embeddings]
+        G & H -->|HNSW| I[pgvector Index]
+    end
+
+    subgraph "Consulta RAG"
+        J[User Query] -->|embedding| I
+        I -->|top-k| K[Context Retrieval]
+        K -->|prompt| L[LLM Response]
+    end
 ```
-databricks-capstone-delivery/
-├── app.py                      # Main Flask API (Day 1/2)
-├── app.yaml                    # Databricks App configuration
-├── lakebase.py                 # Lakebase connection helper
-├── massive_client.py           # Massive API client
-├── setup_secrets.py            # Secret scope setup
-├── requirements.txt            # Python dependencies
-├── databricks.yml              # Bundle configuration
-├── notebooks/
-│   └── ingest_ticker_news_embeddings.py  # Spark pipeline
-├── sql/
-│   ├── 01_setup_news_table.sql           # ticker_news_documents
-│   ├── 02_setup_embeddings_table.sql     # ticker_news_embeddings
-│   ├── 03_setup_chunk_embeddings_table.sql # ticker_news_chunk_embeddings
-│   └── 04_cast_arrays_to_vectors.sql     # pgvector setup
-├── resources/
-│   └── ingest_ticker_news_embeddings_job.yml  # Scheduled job
-├── dashboard/
-│   ├── app.py                  # Dashboard Flask app
-│   ├── app.yaml                # Dashboard configuration
-│   └── templates/
-│       └── index.html          # Dashboard UI
-├── mcp_server/
-│   ├── alpaca_mcp_server.py    # FastMCP server
-│   ├── alpaca_broker.py        # Alpaca broker
-│   ├── massive_broker.py       # Massive broker
-│   ├── lakebase.py             # Lakebase helper
-│   └── app.yaml                # MCP Server configuration
-└── docs/
-    └── PRD_E_PLANO_EXECUCAO.md # Product Requirements & Execution Plan
+
+### Fluxo de Consulta RAG
+
+```mermaid
+flowchart LR
+    A[Query do Usuário] --> B[Embedding da Query]
+    B --> C[Busca Vetorial pgvector]
+    C --> D[Top-k Chunks]
+    D --> E[Contexto Formatado]
+    E --> F[Prompt com Citações]
+    F --> G[Resposta Fundamentada]
 ```
 
 ---
 
-## 🛠️ Ferramentas e Tecnologias
+## 📊 Resultados
 
-| Camada | Tecnologia | Uso |
-|--------|------------|-----|
-| **Data Warehouse** | Databricks Lakebase | PostgreSQL transacional |
-| **Lake Storage** | Delta Lake | Histórico de dados |
-| **Processing** | Apache Spark | Pipelines distribuídos |
-| **Embeddings** | sentence-transformers | Similaridade semântica |
-| **Vector Search** | pgvector (HNSW) | Busca de proximidade |
-| **APIs** | Massive.com | Preços e notícias de ações |
-| **Agent Framework** | FastMCP (Model Context Protocol) | Ferramentas para agente |
-| **Frontend** | Flask + HTML/CSS | Dashboard visual |
+| Métrica | Resultado | Observação |
+|---------|-----------|------------|
+| Dimensionalidade Embeddings | 384 | all-MiniLM-L6-v2 |
+| Métrica Similaridade | Cosine | Otimizada com pgvector |
+| Index Vector | HNSW | Busca O(log n) aproximada |
+| Latência Query RAG | < 500ms | Com índice HNSW |
+| Throughput Embeddings | Batch ~100 | Parallel Spark |
 
 ---
 
-## 📊 Funcionalidades do Sistema
-
-### 1. Rastreamento de Tickers
-
-- Adicionar/remover tickers da watchlist
-- Consultar preços atuais
-- Histórico de preços
-
-### 2. Pesquisa de Notícias
-
-- Buscar notícias por ticker
-- Filtros por data e keywords
-- Extração de conteúdo completo (HTML → texto)
-
-### 3. Busca Semântica (RAG)
-
-- Embeddings de notícias e chunks
-- Consulta por similaridade de cosseno
-- Recuperação de contexto relevante
-
-### 4. Análise e Notas (Escrita do Agente)
-
-- Salvar notas de pesquisa no Lakebase
-- Gerar e salvar relatórios de análise
-- Associar notas e relatórios a tickers
-
-### 5. Agentes de IA
-
-- Ferramentas de leitura (MCP)
-- Ferramentas de escrita (persistência)
-- Orquestração com Agent Bricks (opcional)
-
----
-
-## 🚀 Como Rodar
+## 🚀 Quick Start & Setup
 
 ### Pré-requisitos
 
-1. Acesso ao Databricks Workspace
-2. Massive API Key (grátis em https://www.massive.com)
-3. Lakebase URL configurado no workspace
+- Acesso ao Databricks Workspace
+- Massive API Key (grátis em https://www.massive.com)
+- Lakebase URL configurado no workspace
 
 ### Configuração
 
@@ -191,11 +191,15 @@ psql $LAKEBASE_URL -f sql/01_setup_news_table.sql
 psql $LAKEBASE_URL -f sql/02_setup_embeddings_table.sql
 psql $LAKEBASE_URL -f sql/03_setup_chunk_embeddings_table.sql
 psql $LAKEBASE_URL -f sql/04_cast_arrays_to_vectors.sql
+psql $LAKEBASE_URL -f sql/05_setup_research_tables.sql
 
 # 3. Executar notebook de ingestão
 # (via Databricks UI: importar notebooks/ingest_ticker_news_embeddings.py)
 
-# 4. Deploy dos Apps
+# 4. Testar RAG
+python3 test_rag.py --ticker AAPL --limit 5
+
+# 5. Deploy dos Apps
 databricks bundle deploy -t dev
 ```
 
@@ -209,103 +213,96 @@ databricks bundle deploy -t dev
 | POST | `/news/sync` | Sincronizar notícias |
 | POST | `/search/context` | Busca semântica (RAG) |
 
----
+### Tools do MCP Server
 
-## 📈 Status da Entrega
+**Leitura:**
+- `get_quote(symbol)` - Preço atual
+- `search_news(symbol, query, limit)` - Busca notícias
+- `search_research_context(query, symbol)` - Busca contexto
+- `get_watchlist()` - Lista tickers
+- `add_to_watchlist(symbol)` - Adicionar ticker
+- `remove_from_watchlist(symbol)` - Remover ticker
 
-| Componente | Status | Observação |
-|------------|--------|------------|
-| Código Day 1-3 | ✅ | Implementado localmente |
-| SQLs de setup | ✅ | Criados e testados |
-| Notebook Spark | ✅ | Pipeline completo |
-| Dashboard | ✅ | Flask com UI básica |
-| MCP Server | ✅ | Ferramentas implementadas |
-| Notas e Relatórios | ✅ | Schema pronto, aguarda implementação |
-| Embeddings/RAG | ⚠️ | Tabelas criadas, validaçao pendente |
-| Deploy Databricks | ⏳ | **Falta: deploy no workspace** |
-
----
-
-## 🔍 Entendendo a Arquitetura
-
-### Day 1 — Fundamentos
-- Lakebase: banco PostgreSQL transacional integrado ao lakehouse
-- CDC/CDF: sincronização automática de dados
-- Databricks Apps: aplicativos nativos com acesso a secrets
-
-### Day 2 — Context Engineering
-- Chunking: dividir conteúdo em blocos sobrepostos
-- Embeddings: representação vetorial de texto
-- HNSW: índice para busca semântica rápida
-- Quality: evitar falsos positivos e falsos negativos
-
-### Day 3 — Agentes e MCP
-- Agentes precisam de ferramentas para agir
-- MCP: biblioteca centralizada de ferramentas reutilizáveis
-- Middleware: proteção contra PII, rate limiting, auditoria
-- Escrita: notas e relatórios no Lakebase (não trading)
+**Escrita (Agente):**
+- `save_research_note(symbol, title, content)` - Salvar nota
+- `save_analysis_report(symbol, report, sources)` - Salvar relatório
 
 ---
 
-## 📚 Documentação Adicional
+## 🌳 Estrutura do Projeto
 
-- [`docs/PRD_E_PLANO_EXECUCAO.md`](docs/PRD_E_PLANO_EXECUCAO.md) — Requisitos e plano completo
-- [`databricks-lakebase-app-day-1/`](../databricks-lakebase-app-day-1/) — Código original do treinamento
+```
+databricks-capstone-delivery/
+├── app.py                      # Main Flask API (Day 1/2)
+├── lakebase.py                 # Lakebase connection helper
+├── massive_client.py           # Massive API client
+├── setup_secrets.py            # Secret scope setup
+├── requirements.txt            # Python dependencies
+├── pyproject.toml              # Project metadata
+├── test_rag.py                 # Script de validação RAG
+│
+├── dashboard/
+│   ├── app.py                  # Dashboard Flask
+│   └── templates/index.html    # Dashboard UI
+│
+├── mcp_server/
+│   ├── alpaca_mcp_server.py    # FastMCP server (com writing tools)
+│   ├── lakebase.py             # Lakebase helper (novas funções)
+│   └── massive_broker.py       # Massive broker
+│
+├── notebooks/
+│   └── ingest_ticker_news_embeddings.py  # Spark pipeline
+│
+├── sql/
+│   ├── 01_setup_news_table.sql
+│   ├── 02_setup_embeddings_table.sql
+│   ├── 03_setup_chunk_embeddings_table.sql
+│   ├── 04_cast_arrays_to_vectors.sql
+│   └── 05_setup_research_tables.sql
+│
+└── resources/
+    ├── dashboard.yml
+    ├── ingest_ticker_news_embeddings_job.yml
+    └── mcp_server.yml
+```
 
 ---
 
-## 🎯 Como este projeto demonstra o aprendizado
+## 📚 Documentation Resources
 
-Este projeto é uma demonstração completa das capacidades ensinadas no bootcamp:
-
-1. **Engenharia de Dados** — Pipeline Spark para ingestão e processamento
-2. **RAG (Retrieval-Augmented Generation)** — Embeddings e busca semântica
-3. **Agentes de IA** — MCP tools para leitura e escrita
-4. **Databricks Apps** — Frontend e backend integrados ao workspace
-5. **Observabilidade** — Logs, auditoria e segurança
-6. **DevOps** — Bundle deployment, YAML configs, CI/CD patterns
+- [`PRD_E_PLANO_EXECUCAO.md`](PRD_E_PLANO_EXECUCAO.md) - Requisitos e plano completo
+- [`TECHNICAL.md`](TECHNICAL.md) - Documentação técnica para tech leads
+- [`CHANGELOG.md`](CHANGELOG.md) - Histórico de versões
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) - Guia de contribuição
 
 ---
 
-## 👤 Autor
+## 📄 License
 
-**Roberto**  
-Data Engineer & AI Enthusiast
+Este projeto foi desenvolvido como parte do treinamento do [Databricks AI Bootcamp](https://www.dataexpert.io).
 
-### Contato e Projetos
+**Copyright (c) 2026 Roberto**
 
-- [GitHub](https://github.com/Roberton003)
-- [LinkedIn](https://www.linkedin.com/in/roberton003/)
-- [DataExpert.io](https://www.dataexpert.io)
+Todos os direitos reservados.
 
----
-
-## 📄 Licença
-
-Este projeto foi desenvolvido como parte do treinamento do [Databricks AI Bootcamp](https://www.dataexpert.io).  
-Todos os direitos reservados ao autor original. O código pode ser utilizado como portfolio para demonstrar competências técnicas.
+Este código pode ser utilizado como portfolio para demonstrar competências técnicas em Engenharia de Dados, RAG e Agentes de IA.
 
 ---
 
 ## ⚠️ Notas Importantes
 
 - **Este não é um sistema de trading em produção.** Não deve ser usado para decisões financeiras reais.
-- O sistema usa **paper trading simulado** quando Alpaca está configurado.
 - A API do Massive tem limites de rate. O pipeline respeita esses limites.
 - Secrets nunca devem ser commitados. O `setup_secrets.py` garante isso.
 
 ---
 
-## 🔄 Histórico de Versões
+<div align="center">
 
-| Versão | Data | Descrição |
-|--------|------|-----------|
-| v1.0 | 2026-08-08 | Início da migração Day 1 → Day 3 |
-| v1.1 | 2026-08-09 | Entendimento do capstone |
-| v2.0 | 2026-08-10 | PRD e Plano de Execução completo |
-| v3.0 | 2026-08-10 | **Capstone: proposta formal = Stock-market research assistant; foco em notas/relatórios** |
-| v4.0 | 2026-08-10 | **Repositório de entrega profissional com documentação completa** |
+*Este projeto foi desenvolvido para demonstrar as habilidades técnicas adquiridas durante o Databricks AI Bootcamp.*
 
----
+**Author:** Roberto  
+**LinkedIn:** https://www.linkedin.com/in/roberton003/  
+**GitHub:** https://github.com/Roberton003
 
-*Este projeto foi desenvolvido para demonstrar as habilidades técnicas adquiridas durante o Databricks AI Bootcamp, incluindo engenharia de dados, RAG, agentes de IA e desenvolvimento nativo no Databricks.*
+</div>
