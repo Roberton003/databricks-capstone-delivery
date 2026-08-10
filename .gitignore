@@ -78,3 +78,50 @@ docs/_build/
 
 # Jupyter notebooks (source)
 *.ipynb
+
+# ============================================
+# ENGENHARIA DE CONHECIMENTO (NÃO PUBLICAR)
+# ============================================
+# Arquivos que contêm processos internos, decisões e aprendizados
+# que devem permanecer locais, não no repositório público
+
+# Planos de implementação
+docs/superpowers/plans/
+docs/plans/
+**/superpowers/plans/
+
+# Como chegamos nas conclusões
+docs/como-chegamos-aqui/
+docs/jornada/
+docs/evolucao/
+docs/historico-decisoes/
+
+# Decisões técnicas
+docs/decisoes/
+docs/decisions/
+
+# Processos e metodologias
+docs/processo/
+docs/metodologia/
+docs/agile/
+docs/scrum/
+
+# Notas pessoais
+docs/notes/
+docs/anotacoes/
+docs/observacoes/
+docs/learnings/
+
+# Arquivos de debug/teste interno
+docs/*debug*
+docs/*tmp*
+docs/*.log
+
+# Arquivos de backfill
+docs/backfill/
+docs/*-backup/
+docs/*-original/
+
+# Registros de sessão
+*.session
+*.session.*
