@@ -1,0 +1,13 @@
+$ databricks apps get weather-dashboard
+  "name": "weather-dashboard",
+
+$ databricks apps get weather-mcp
+      "message": "App started successfully",
+    "message": "App has status: App is running",
+  "name": "weather-mcp",
+
+$ databricks serving-endpoints get mas-581396aa-endpoint
+          "name": "mas-base-model-3fb23a97"
+          "deployment": "DEPLOYMENT_READY",
+  "name": "mas-581396aa-endpoint",
+    "config_update": "NOT_UPDATING",

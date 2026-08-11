@@ -12,11 +12,15 @@ import os
 from contextlib import contextmanager
 
 import psycopg2
-from databricks.sdk import WorkspaceClient
 from psycopg2.extras import RealDictCursor
 from sqlalchemy import create_engine
 
-_w = WorkspaceClient()
+try:
+    from databricks.sdk import WorkspaceClient
+except ModuleNotFoundError:
+    WorkspaceClient = None
+
+_w = WorkspaceClient() if WorkspaceClient else None
 
 _SCOPE = os.environ.get("LAKEBASE_SECRET_SCOPE", "database")
 _KEY = os.environ.get("LAKEBASE_SECRET_KEY", "lakebase-url")
@@ -24,6 +28,8 @@ _KEY = os.environ.get("LAKEBASE_SECRET_KEY", "lakebase-url")
 
 def _lakebase_url() -> str:
     """Fetch and decode the Lakebase connection URL from the Databricks secret scope."""
+    if _w is None:
+        raise RuntimeError("Databricks SDK is required for Lakebase access")
     secret = _w.secrets.get_secret(scope=_SCOPE, key=_KEY)
     return base64.b64decode(secret.value).decode("utf-8")
 

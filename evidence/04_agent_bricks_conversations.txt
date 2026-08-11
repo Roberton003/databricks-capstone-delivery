@@ -1,0 +1,5 @@
+$ Agent Bricks end-to-end evidence
+Lisbon: get_current_weather → 24.4°C, 0.0 mm precipitation
+Porto: get_forecast → 3-day forecast returned
+London: predict_umbrella_needed → 0% precipitation, umbrella not needed
+All three responses completed through mas-581396aa-endpoint.

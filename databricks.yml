@@ -6,17 +6,27 @@ bundle:
   name: databricks-lakebase-app-day-3
 
 include:
-  - resources/*.yml
+  - resources/ingest_weather_embeddings_job.yml
+
+sync:
+  include:
+    - dashboard/**
+    - notebooks/ingest_weather_embeddings.py
+    - sql/**
+    - resources/ingest_weather_embeddings_job.yml
+    - databricks.yml
 
 targets:
   dev:
     mode: development
     default: true
     workspace:
-      host: https://<your-workspace-instance>.cloud.databricks.com
+      profile: dbc-ab479437-b1bb
+      host: https://dbc-ab479437-b1bb.cloud.databricks.com
 
   prod:
     mode: production
     workspace:
-      host: https://<your-workspace-instance>.cloud.databricks.com
+      profile: dbc-ab479437-b1bb
+      host: https://dbc-ab479437-b1bb.cloud.databricks.com
       root_path: /Shared/.bundle/${bundle.name}/${bundle.target}

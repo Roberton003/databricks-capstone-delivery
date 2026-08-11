@@ -1,5 +1,7 @@
 """FastMCP entrypoint for weather tools."""
 
+import os
+
 try:
     from fastmcp import FastMCP
 except ImportError:
@@ -48,4 +50,8 @@ if mcp:
 if __name__ == "__main__":
     if mcp is None:
         raise RuntimeError("FastMCP is required to run the weather MCP server")
-    mcp.run()
+    mcp.run(
+        transport="streamable-http",
+        host=os.environ.get("HOST", "0.0.0.0"),
+        port=int(os.environ.get("PORT", os.environ.get("DATABRICKS_APP_PORT", "8000"))),
+    )

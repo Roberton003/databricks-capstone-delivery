@@ -1,0 +1,4 @@
+$ python3 -m unittest weather_mcp_server.test_weather dashboard.test_weather_pipeline
+
+$ python3 -m py_compile weather_mcp_server/*.py dashboard/*.py notebooks/ingest_weather_embeddings.py
+PASS

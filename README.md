@@ -110,8 +110,47 @@ Este repositório contém a **entrega final do projeto do Databricks AI Bootcamp
 | **Processing** | Apache Spark | 3.5+ | Pipelines distribuídos |
 | **Embeddings** | sentence-transformers | all-MiniLM-L6-v2 | Similaridade semântica |
 | **Vector Search** | pgvector | 0.5+ | Índice HNSW cosine |
-| **APIs** | Massive.com | v2 | Preços e notícias de ações |
+| **APIs** | Massive.com + National Weather Service | v2 + api.weather.gov | Mercado e dados meteorológicos narrativos |
 | **Agent Framework** | FastMCP | 1.0+ | Ferramentas para agente |
+| **Weather Search** | Flask + pgvector | vector(384) | Busca semântica de alertas e previsões |
+
+### Pipeline meteorológico
+
+O dashboard também implementa o fluxo `NWS API -> weather_documents -> embeddings -> weather_embeddings -> REST API`.
+A fonte é o National Weather Service (`api.weather.gov`), sem chave de API, com resolução de pontos via `/points/{lat},{lon}`.
+
+```bash
+# Aplicar no Lakebase, em ordem
+psql "$LAKEBASE_URL" -f sql/05_setup_weather_documents.sql
+psql "$LAKEBASE_URL" -f sql/06_setup_weather_embeddings.sql
+
+# Sincronizar alertas e previsões narrativas
+curl -X POST "$DASHBOARD_URL/weather/sync" \\
+  -H 'Content-Type: application/json' \\
+  -d '{"locations":["Chicago, IL","Austin, TX"],"limit":50}'
+
+# Gerar chunks e embeddings localmente ou no Job configurado
+python3 notebooks/ingest_weather_embeddings.py
+
+# Buscar semanticamente
+curl -X POST "$DASHBOARD_URL/weather/search" \\
+  -H 'Content-Type: application/json' \\
+  -d '{"query":"risk of flooding near rivers","top_k":5}'
+```
+
+O chunking usa janelas de 800 caracteres com sobreposição de 100. O modelo `all-MiniLM-L6-v2` produz vetores de 384 dimensões; a busca usa `<=>` e índice HNSW com `vector_cosine_ops`. A sincronização usa upsert por ID estável e pode ser reexecutada sem duplicar documentos.
+
+**Estado:** implementação local em andamento; aplicação real do DDL no Lakebase, execução do modelo no Workspace, URL do App, registro no Agent Bricks e validação end-to-end continuam pendentes.
+
+---
+
+## Endpoints da API
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| POST | `/weather/sync` | Sincroniza documentos do NWS |
+| POST | `/weather/search` | Busca vetorial por alertas e previsões |
+
 | **Frontend** | Flask | 2.0+ | API e Dashboard |
 
 ---
@@ -322,6 +361,10 @@ Todos os direitos reservados.
 Este código pode ser utilizado como portfolio para demonstrar competências técnicas em Engenharia de Dados, RAG e Agentes de IA.
 
 ---
+
+## Evidências da entrega meteorológica
+
+O mapeamento das evidências para **Vector Weather Retrieval Service**, **Build your own weather MCP server** e **Capstone Project Submission** está em [`docs/EVIDENCIAS_WEATHER.md`](docs/EVIDENCIAS_WEATHER.md). As capturas de execução reproduzível ficam em [`evidence/`](evidence/).
 
 ## ⚠️ Notas Importantes
 

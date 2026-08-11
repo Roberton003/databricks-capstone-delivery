@@ -1,0 +1,16 @@
+$ databricks psql ...
+ documents 
+-----------
+        14
+(1 linha)
+
+ embeddings 
+------------
+         14
+(1 linha)
+
+ dimensions | rows 
+------------+------
+        384 |   14
+(1 linha)
+
