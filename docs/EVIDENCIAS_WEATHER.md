@@ -60,7 +60,7 @@ Arquivos principais:
 | Lista de ferramentas | `weather_mcp_server/README.md` |
 | Rotas autenticadas do dashboard | `evidence/05_dashboard_authenticated_calls.txt` |
 | Lakebase write path do dashboard | `POST/DELETE /api/watchlist/<symbol>` retornam 201/200 |
-| Lakebase write path do MCP | `save_weather_note` disponível no Agent Bricks supervisor tool |
+| Lakebase write path do MCP | `evidence/agent_bricks/README.md` (request + approval) e `save_weather_note` registrado |
 
 URLs:
 

@@ -1,0 +1,6 @@
+{
+  "ts": 1786526938,
+  "status": 200,
+  "body": "{\"tool_choice\": null, \"truncation\": null, \"id\": \"resp_b990f171633146f59915c172e6fff522\", \"created_at\": null, \"error\": null, \"incomplete_details\": null, \"instructions\": null, \"metadata\": null, \"model\": null, \"object\": \"response\", \"output\": [{\"type\": \"message\", \"id\": \"msg_bdrk_018MvTDUSTpCfJvWPxpULDRD\", \"role\": \"assistant\", \"content\": [{\"type\": \"output_text\", \"text\": \"I'll call the save_weather_note function with the specified parameters for Lisbon.\"}]}, {\"type\": \"mcp_approval_request\", \"id\": \"toolu_bdrk_013oivy1jfvH9iSY1GNcJrba\", \"arguments\": \"{\\\"location\\\": \\\"Lisbon\\\", \\\"title\\\": \\\"agent-bricks-evidence 1786526938\\\", \\\"content\\\": \\\"transcript attempt 1786526938\\\", \\\"owner_email\\\": \\\"user@example.com\\\"}\", \"name\": \"save_weather_note\", \"server_label\": \"weather-mcp\"}], \"parallel_tool_calls\": null, \"temperature\": null, \"tools\": null, \"top_p\": null, \"max_output_tokens\": null, \"previous_response_id\": null, \"reasoning\": null, \"status\": \"completed\", \"text\": null, \"usage\": null, \"user\": null, \"custom_outputs\": null}",
+  "error": null
+}
