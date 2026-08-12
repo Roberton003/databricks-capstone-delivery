@@ -34,9 +34,10 @@ Arquivos principais:
 |---|---|
 | App MCP implantado | `evidence/03_remote_services.png` |
 | Transporte HTTP | `weather_mcp_server.py` usa `streamable-http` |
-| Ferramentas registradas | `get_current_weather`, `get_forecast`, `predict_umbrella_needed` |
+| Ferramentas registradas | `get_current_weather`, `get_forecast`, `predict_umbrella_needed`, `save_weather_note`, `add_weather_watchlist`, `remove_weather_watchlist` |
 | Testes locais | `evidence/01_local_validation.png` |
 | App em execução | `weather-mcp` em estado RUNNING |
+| Lakebase resource anexado | `databricks apps get weather-mcp` lista `postgres` resource |
 
 Arquivos principais:
 
@@ -57,6 +58,9 @@ Arquivos principais:
 | Conversas Agent Bricks | `evidence/04_agent_bricks_conversations.png` |
 | Instruções do agente | `weather_mcp_server/SYSTEM_PROMPT.md` |
 | Lista de ferramentas | `weather_mcp_server/README.md` |
+| Rotas autenticadas do dashboard | `evidence/05_dashboard_authenticated_calls.txt` |
+| Lakebase write path do dashboard | `POST/DELETE /api/watchlist/<symbol>` retornam 201/200 |
+| Lakebase write path do MCP | `save_weather_note` disponível no Agent Bricks supervisor tool |
 
 URLs:
 

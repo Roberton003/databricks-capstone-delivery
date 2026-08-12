@@ -1,0 +1,67 @@
+# Dashboard authenticated API evidence
+# Token fetched via: databricks auth token dbc-ab479437-b1bb
+/healthz 200 
+/api/watchlist 200 [
+  {
+    "email": "roberto.m0010@gmail.com",
+    "latest_price": null,
+    "symbol": "LISBON",
+    "updated_at": "Wed, 12 Aug 2026 09:08:16 GMT"
+  },
+  {
+    "email": "roberto.m0010@gmail.com",
+    "latest_price": null,
+    "symbol": "PORTO",
+    "updated_at": "Wed, 12 Aug 2026 09:08:18 GMT"
+  }
+]
+
+/weather/search 200 {
+  "results": [
+    {
+      "chunk_text": "Showers and thunderstorms. Some of the storms could be severe and produce heavy rain. Mostly cloudy, with a high near 80. South southwest wind around 5 mph, with gusts as high as 15 mph. Chance of precipitation is 80%. New rainfall amounts between 1 and 2 inches possible.",
+      "headline": "Tuesday",
+      "id": "forecast:Chicago, IL:2",
+      "location": "Chicago, IL",
+      "narrative_text": "Showers and thunderstorms. Some of the storms could be severe and produce heavy rain. Mostly cloudy, with a high near 80. South southwest wind around 5 mph,
+POST /api/watchlist/LISBON 201 {
+  "email": "roberto.m0010@gmail.com",
+  "latest_price": null,
+  "symbol": "LISBON",
+  "updated_at": "Wed, 12 Aug 2026 09:08:44 GMT"
+}
+
+POST /api/watchlist/PORTO 201 {
+  "email": "roberto.m0010@gmail.com",
+  "latest_price": null,
+  "symbol": "PORTO",
+  "updated_at": "Wed, 12 Aug 2026 09:08:46 GMT"
+}
+
+GET /api/watchlist 200 [
+  {
+    "email": "roberto.m0010@gmail.com",
+    "latest_price": null,
+    "symbol": "LISBON",
+    "updated_at": "Wed, 12 Aug 2026 09:08:44 GMT"
+  },
+  {
+    "email": "roberto.m0010@gmail.com",
+    "latest_price": null,
+    "symbol": "PORTO",
+    "updated_at": "Wed, 12 Aug 2026 09:08:46 GMT"
+  }
+]
+
+DELETE /api/watchlist/LISBON 200 {
+  "deleted": true,
+  "email": "roberto.m0010@gmail.com",
+  "symbol": "LISBON"
+}
+
+DELETE /api/watchlist/PORTO 200 {
+  "deleted": true,
+  "email": "roberto.m0010@gmail.com",
+  "symbol": "PORTO"
+}
+
