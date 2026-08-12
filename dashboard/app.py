@@ -184,6 +184,35 @@ def get_watchlist():
     return jsonify(rows)
 
 
+@app.route("/api/watchlist/<symbol>", methods=["POST"])
+def add_watchlist(symbol):
+    if not _TICKER_RE.fullmatch(symbol.upper()):
+        return jsonify({"error": f"Invalid ticker symbol: {symbol!r}"}), 400
+    ensure_watchlist_table()
+    email = _current_user_email()
+    rows = lakebase.run_returning(
+        f"""INSERT INTO {WATCHLIST_TABLE_NAME} (symbol, email, updated_at)
+        VALUES (%s, %s, now())
+        ON CONFLICT (symbol, email) DO UPDATE SET updated_at = now()
+        RETURNING symbol, email, latest_price, updated_at""",
+        (symbol.upper(), email),
+    )
+    return jsonify(rows[0]), 201
+
+
+@app.route("/api/watchlist/<symbol>", methods=["DELETE"])
+def remove_watchlist(symbol):
+    if not _TICKER_RE.fullmatch(symbol.upper()):
+        return jsonify({"error": f"Invalid ticker symbol: {symbol!r}"}), 400
+    rows = lakebase.run_query(
+        f"DELETE FROM {WATCHLIST_TABLE_NAME} WHERE symbol = %s AND email = %s RETURNING symbol, email",
+        (symbol.upper(), _current_user_email()),
+    )
+    if not rows:
+        return jsonify({"deleted": False, "symbol": symbol.upper()}), 404
+    return jsonify({"deleted": True, **rows[0]})
+
+
 @app.route("/api/news")
 def get_news():
     ensure_news_table()

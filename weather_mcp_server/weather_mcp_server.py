@@ -9,8 +9,14 @@ except ImportError:
 
 try:
     from .weather_service import WeatherService
+    from .weather_notes import (
+        add_to_watchlist,
+        remove_from_watchlist,
+        save_research_note,
+    )
 except ImportError:
     from weather_service import WeatherService
+    from weather_notes import add_to_watchlist, remove_from_watchlist, save_research_note
 
 
 service = WeatherService()
@@ -44,6 +50,30 @@ if mcp:
         try:
             return service.predict_umbrella_needed(location, days)
         except (ValueError, OSError) as error:
+            return _error_response(error)
+
+    @mcp.tool()
+    def save_weather_note(location: str, title: str, content: str, owner_email: str):
+        """Save a weather research note for the authenticated user."""
+        try:
+            return save_research_note(location, title, content, owner_email)
+        except (ValueError, OSError, RuntimeError) as error:
+            return _error_response(error)
+
+    @mcp.tool()
+    def add_weather_watchlist(symbol: str, owner_email: str):
+        """Add a symbol to the authenticated user's watchlist."""
+        try:
+            return add_to_watchlist(symbol, owner_email)
+        except (ValueError, OSError, RuntimeError) as error:
+            return _error_response(error)
+
+    @mcp.tool()
+    def remove_weather_watchlist(symbol: str, owner_email: str):
+        """Remove a symbol from the authenticated user's watchlist."""
+        try:
+            return remove_from_watchlist(symbol, owner_email)
+        except (ValueError, OSError, RuntimeError) as error:
             return _error_response(error)
 
 
