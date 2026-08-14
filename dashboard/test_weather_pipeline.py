@@ -107,7 +107,57 @@ class WeatherEndpointTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+    @patch("dashboard.lakebase._generate_token", return_value="oauth-token")
+    @patch("dashboard.lakebase._legacy_url", return_value="postgresql://roberto.m0010%2540gmail.com:secret@db.example:5432/weather?sslmode=require")
+    def test_legacy_connection_params_use_decoded_identity_and_valid_sslmode(self, legacy_url, generate_token):
+        from dashboard import lakebase
+
+        params = lakebase._connection_params(object())
+
+        self.assertEqual(params["sslmode"], "require")
+        self.assertEqual(params["user"], "roberto.m0010@gmail.com")
+        self.assertEqual(params["password"], "oauth-token")
+
+    def test_generate_token_uses_rest_fallback_for_older_sdk(self):
+        from dashboard import lakebase
+
+        calls = []
+
+        class ApiClient:
+            def do(self, method, path, body):
+                calls.append((method, path, body))
+                return {"token": "rest-oauth-token"}
+
+        workspace = types.SimpleNamespace(api_client=ApiClient())
+
+        self.assertEqual(lakebase._generate_token(workspace), "rest-oauth-token")
+        self.assertEqual(calls, [("POST", "/api/2.0/postgres/credentials", {
+            "endpoint": lakebase._ENDPOINT,
+        })])
+
+    @patch.dict("os.environ", {
+        "PGHOST": "db.example",
+        "PGDATABASE": "weather",
+        "PGUSER": "roberto.m0010%2540gmail.com",
+    }, clear=False)
+
+    @patch("dashboard.lakebase._generate_token", return_value="oauth-token")
+    def test_app_connection_params_use_lakebase_database_identity(self, generate_token):
+        from dashboard import lakebase
+
+        workspace = types.SimpleNamespace(
+            current_user=types.SimpleNamespace(
+                me=lambda: types.SimpleNamespace(user_name="different@example.com")
+            )
+        )
+
+        params = lakebase._connection_params(workspace)
+
+        self.assertEqual(params["user"], "roberto.m0010@gmail.com")
+
     @patch("dashboard.weather_search.embed_query")
+
+
     @patch("dashboard.lakebase.run_query")
     def test_search_uses_parameterized_cosine_distance(self, run_query, embed_query):
         from dashboard import weather_search

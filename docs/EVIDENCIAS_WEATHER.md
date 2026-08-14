@@ -13,11 +13,13 @@ As imagens em `evidence/` são capturas renderizadas das saídas reais dos coman
 | Requisito | Evidência |
 |---|---|
 | Dados NWS normalizados | `evidence/02_lakebase_vectors.png` |
-| Documentos carregados no Lakebase | `weather_documents = 14` |
-| Embeddings armazenados | `weather_embeddings = 14` |
-| Dimensão compatível | `vector(384)` |
-| Busca vetorial | `<=>` validado no código e executado no Lakebase |
-| Job remoto | `evidence/03_remote_services.png` |
+| Documentos carregados no Lakebase | `weather_documents = 14` (consulta autenticada em 2026-08-13) |
+| Embeddings armazenados | `weather_embeddings = 14` (consulta autenticada em 2026-08-13) |
+| IDs distintos | `14` |
+| Dimensão compatível | `14` vetores com dimensão `384`; `0` com outra dimensão |
+| Busca vetorial | `<=>` validado no código; execução autenticada permanece evidência complementar |
+| Job remoto | Job run `744577763099157` e task run `1065175979800036`, `SUCCESS` |
+| Idempotência | Segunda execução: Job run `311622421121371`, task run `552933927446282`, `SUCCESS`; invariantes permaneceram `14/14/14/14/0` |
 
 Arquivos principais:
 
@@ -60,7 +62,7 @@ Arquivos principais:
 | Lista de ferramentas | `weather_mcp_server/README.md` |
 | Rotas autenticadas do dashboard | `evidence/05_dashboard_authenticated_calls.txt` |
 | Lakebase write path do dashboard | `POST/DELETE /api/watchlist/<symbol>` retornam 201/200 |
-| Lakebase write path do MCP | `evidence/agent_bricks/README.md` (request + approval) e `save_weather_note` registrado |
+| Lakebase write path do MCP | `evidence/agent_bricks/live_write_20260814.txt`: `save_weather_note` retornou JSON real e `SELECT` autenticado confirmou a linha por `owner_email` |
 
 URLs:
 
@@ -68,9 +70,9 @@ URLs:
 - Weather MCP: https://weather-mcp-7474651435966335.aws.databricksapps.com
 - Agent endpoint: `mas-581396aa-endpoint`
 
-## Evidência end-to-end do Agent Bricks
+## Evidência do Agent Bricks
 
-As três chamadas foram executadas pelo endpoint Agent Bricks e usaram a ferramenta MCP correspondente:
+As três chamadas de leitura foram executadas pelo endpoint Agent Bricks e usaram a ferramenta MCP correspondente:
 
 1. Lisbon — `get_current_weather` — retornou temperatura e precipitação reais.
 2. Porto — `get_forecast` — retornou previsão para três dias.
@@ -78,9 +80,17 @@ As três chamadas foram executadas pelo endpoint Agent Bricks e usaram a ferrame
 
 A captura renderizada está em `evidence/04_agent_bricks_conversations.png`.
 
+A escrita via Agent Bricks está `VALIDATED`: `evidence/agent_bricks/live_write_20260814.txt` contém o `function_call_output` real de `save_weather_note` e o `SELECT` autenticado escopado a `roberto.m0010@gmail.com` confirmou a mesma linha persistida. O approval request histórico continua documentado em `evidence/agent_bricks/README.md`; aprovação isolada não é usada como prova.
+
+## Estado de validação
+
+- **VALIDATED:** código local, bundle validation/deploy, duas execuções remotas do Job com `SUCCESS`, contagens e dimensões, ausência de duplicidades/órfãos/modelos incorretos, e write loop Agent Bricks com persistência confirmada.
+- **IMPLEMENTED:** ferramentas MCP de escrita e escopo por `owner_email`.
+- **KNOWN LIMITATION:** screenshot autenticada da interface Workspace não foi coletada; os traces autenticados e estados remotos estão documentados em texto.
+
 ## Capturas autenticadas da interface
 
-O Chrome local não possuía uma sessão autenticada reutilizável do Workspace no momento da coleta. Portanto, não foi anexada uma tela de login como evidência. Se o portal exigir especificamente uma captura da interface Databricks, abrir o Workspace autenticado e substituir/adicionar as imagens correspondentes:
+O Chrome local não possuía uma sessão autenticada reutilizável do Workspace no momento da coleta. Portanto, não foi anexada uma tela de login como evidência. Os estados e traces autenticados de texto estão disponíveis nos artefatos referenciados. Se o portal exigir especificamente uma captura da interface Databricks, abrir o Workspace autenticado e substituir/adicionar as imagens correspondentes:
 
 - Dashboard App em execução;
 - tabelas `weather_documents` e `weather_embeddings` no Lakebase;

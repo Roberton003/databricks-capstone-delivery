@@ -2,6 +2,14 @@ command:
   - "python"
   - "weather_mcp_server.py"
 
+env:
+  - name: PGUSER
+    value: "e275f7b1-7bae-4b0e-a183-3b71b91229f3"
+  - name: PGDATABASE
+    value: "weather"
+  - name: PGSSLMODE
+    value: "require"
+
 resources:
   - name: requirements
     source:

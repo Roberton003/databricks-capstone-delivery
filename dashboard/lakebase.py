@@ -17,7 +17,7 @@ from __future__ import annotations
 import base64
 import os
 from contextlib import contextmanager
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import unquote, urlsplit, urlunsplit
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -41,8 +41,15 @@ def _workspace_client() -> WorkspaceClient | None:
 
 
 def _generate_token(w: WorkspaceClient) -> str:
-    credential = w.postgres.generate_database_credential(endpoint=_ENDPOINT)
-    return credential.token
+    if hasattr(w, "postgres"):
+        credential = w.postgres.generate_database_credential(endpoint=_ENDPOINT)
+        return credential.token
+    response = w.api_client.do(
+        "POST",
+        "/api/2.0/postgres/credentials",
+        {"endpoint": _ENDPOINT},
+    )
+    return response["token"]
 
 
 def _legacy_url(w: WorkspaceClient | None) -> str:
@@ -64,7 +71,7 @@ def _connection_params(w: WorkspaceClient) -> dict:
             "host": host,
             "port": port,
             "dbname": database.lstrip("/") or "weather",
-            "user": user,
+            "user": unquote(unquote(user)),
             "password": _generate_token(w),
             "sslmode": sslmode,
         }
@@ -75,9 +82,9 @@ def _connection_params(w: WorkspaceClient) -> dict:
         "host": parts.hostname,
         "port": parts.port or 5432,
         "dbname": (parts.path or "/weather").lstrip("/") or "weather",
-        "user": parts.username,
+        "user": unquote(unquote(parts.username or "")),
         "password": token,
-        "sslmode": parts.query or "sslmode=require",
+        "sslmode": (parts.query.removeprefix("sslmode=") if parts.query else "require"),
     }
 
 

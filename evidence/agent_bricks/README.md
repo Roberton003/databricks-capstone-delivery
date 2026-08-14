@@ -1,20 +1,37 @@
 # Agent Bricks write tool evidence
 
-Captured 2026-08-12 (UTC) against endpoint `mas-581396aa-endpoint` (host `dbc-ab479437-b1bb.cloud.databricks.com`) using `databricks auth token`.
+## Current status: VALIDATED
 
-The supervisor accepted the user instruction to call `save_weather_note` and emitted a `mcp_approval_request` block that names `weather-mcp` and carries the full arguments the agent intended to write:
+The fresh run on 2026-08-14 completed the required write chain against endpoint `mas-581396aa-endpoint`:
 
-```json
-{"tool_choice": null, "truncation": null, "id": "resp_b990f171633146f59915c172e6fff522", "created_at": null, "error": null, "incomplete_details": null, "instructions": null, "metadata": null, "model": null, "object": "response", "output": [{"type": "message", "id": "msg_bdrk_018MvTDUSTpCfJvWPxpULDRD", "role": "assistant", "content": [{"type": "output_text", "text": "I'll call the save_weather_note function with the specified parameters for Lisbon."}]}, {"type": "mcp_approval_request", "id": "toolu_bdrk_013oivy1jfvH9iSY1GNcJrba", "arguments": "{\"location\": \"Lisbon\", \"title\": \"agent-bricks-evidence 1786526938\", \"content\": \"transcript attempt 1786526938\", \"owner_email\": \"user@example.com\"}", "name": "save_weather_note", "server_label": "weather-mcp"}], "parallel_tool_calls": null, "temperature": null, "tools": null, "top_p": null, "max_output_tokens": null, "previous_response_id": null, "reasoning": null, "status": "completed", "text": null, "usage": null, "user": null, "custom_outputs": null}
+1. Agent Bricks emitted an `mcp_approval_request` for `save_weather_note`.
+2. The approved continuation returned a real `function_call_output`.
+3. An authenticated owner-scoped `SELECT` returned the same persisted row.
+
+The complete redacted evidence is in `live_write_20260814.txt`.
+
+Validated note ID:
+
+```text
+3075257bb28e0e5a5d38932909d18b06a842bee6c172270e2f61ddcd2ef2c686
 ```
 
-## Status of the approval flow
+The tool result and query both identify:
 
-- `POST /invocations` → 200 with `status: completed` and a single `mcp_approval_request` block.
-- The follow-up approval POST returned 200 but produced an assistant greeting instead of the tool result. The endpoint contract here does not accept `previous_response_id` as a continuation cursor; the supervisor emits a fresh response cycle on resubmission. This means the write tool is reachable from the supervisor, but persisting the result through the same endpoint requires driving the approval response inside the same call (no separate approval step), which is what produced the captured `mcp_approval_request`.
-- Dashboard authenticated POST/DELETE (`evidence/05_dashboard_authenticated_calls.txt`) already proves that the same `save_research_note` and `add/remove_from_watchlist` helpers mutate Lakebase via dynamic OAuth; the supervisor wires those same helpers via the MCP server.
+```text
+owner_email: roberto.m0010@gmail.com
+location: Lisbon
+title: agent-bricks-live-evidence
+content_length: 37
+```
 
-## Reproduction commands
+## Historical negative example
+
+`attempt_1786526938.json` and `approval_1786526977.json` document an earlier approval request followed by a greeting rather than a tool result. They are retained as a negative example demonstrating that an approval request alone is not persistence evidence.
+
+## Reproduction template
+
+Use a fresh token at execution time; never commit the resolved token or request headers:
 
 ```bash
 TOKEN=$(databricks auth token --output json | python3 -c 'import json,sys;print(json.load(sys.stdin)["access_token"])')
@@ -22,3 +39,7 @@ curl -sS -X POST https://dbc-ab479437-b1bb.cloud.databricks.com/serving-endpoint
   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d @evidence/agent_bricks/attempt_1786526938.json
 ```
+
+The historical fixture is diagnostic only. Use `live_write_20260814.txt` as the completion evidence.
+
+No access token, cookie, authorization header, password, or secret value is stored in the evidence output.

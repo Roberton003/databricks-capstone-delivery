@@ -1,0 +1,49 @@
+# Agent Bricks authenticated write evidence
+
+Date: 2026-08-14 UTC
+Endpoint: mas-581396aa-endpoint
+MCP server: weather-mcp
+
+## Request
+
+Tool: save_weather_note
+Arguments:
+
+```json
+{
+  "location": "Lisbon",
+  "title": "agent-bricks-live-evidence",
+  "content": "live authenticated write verification",
+  "owner_email": "roberto.m0010@gmail.com"
+}
+```
+
+## Tool result
+
+```json
+{
+  "id": "3075257bb28e0e5a5d38932909d18b06a842bee6c172270e2f61ddcd2ef2c686",
+  "owner_email": "roberto.m0010@gmail.com",
+  "location": "Lisbon",
+  "title": "agent-bricks-live-evidence",
+  "content_length": 37,
+  "created_at": "2026-08-14T01:18:01.832984Z",
+  "updated_at": "2026-08-14T01:18:01.832984Z"
+}
+```
+
+## Authenticated owner-scoped SELECT
+
+Command:
+
+```bash
+databricks psql --project weather-intelligence --branch production --endpoint primary -- -d weather -At -c 'SELECT id, owner_email, location, title, content, length(content) AS content_length FROM research_notes WHERE owner_email = $$roberto.m0010@gmail.com$$ AND title = $$agent-bricks-live-evidence$$;'
+```
+
+Redacted output:
+
+```text
+3075257bb28e0e5a5d38932909d18b06a842bee6c172270e2f61ddcd2ef2c686|roberto.m0010@gmail.com|Lisbon|agent-bricks-live-evidence|live authenticated write verification|37
+```
+
+No access token, cookie, authorization header, password, or secret value is included in this evidence.
