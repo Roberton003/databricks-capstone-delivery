@@ -1,3 +1,18 @@
+<div align="center">
+
+# databricks-capstone-delivery
+
+[![Spark](https://img.shields.io/badge/Apache_Spark-3.5%2B-E25A1C?style=for-the-badge&logo=apachespark&logoColor=white)](https://spark.apache.org/)
+[![Databricks](https://img.shields.io/badge/Databricks-Platform-FF3621?style=for-the-badge&logo=databricks&logoColor=white)](https://databricks.com/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
+<p><b>Assistente de pesquisa de mercado de ações impulsionado por Databricks, RAG com pgvector e Agentes MCP.</b></p>
+
+<img src="docs/images/project-hero.svg" alt="databricks-capstone-delivery Hero Banner" width="760">
+
+</div>
+
 # Weather Intelligence
 
 Databricks AI Bootcamp capstone: a weather intelligence service that ingests National Weather Service data, creates 384-dimensional embeddings, stores them in Lakebase Postgres with pgvector, and exposes grounded retrieval through a dashboard and MCP server.
